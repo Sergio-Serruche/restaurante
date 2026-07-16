@@ -1,0 +1,103 @@
+================================================================================
+          RESTAURATE - MANUAL DE ROLES, FUNCIONES Y CAPACIDADES
+================================================================================
+
+Este documento detalla los roles, funciones principales y permisos específicos
+de cada uno de los actores que interactúan en la plataforma Restaurate.
+
+--------------------------------------------------------------------------------
+1. CLIENTE INVITADO (Usuario no registrado)
+--------------------------------------------------------------------------------
+* Descripción:
+  Usuario casual que accede a la plataforma web o escanea un código QR desde 
+  el local (mesa) sin haber iniciado sesión o haberse registrado previamente.
+
+* Función Principal:
+  Explorar la oferta del restaurante de manera rápida y sin fricción.
+
+* ¿Qué cosas puede hacer? (Capacidades y Permisos):
+  - Visualizar el menú digital interactivo y consultar los precios de los productos.
+  - Filtrar productos por categorías (entradas, platos fuertes, bebidas, postres).
+  - Agregar productos al carrito de compras de manera temporal.
+  - Iniciar el proceso de registro o inicio de sesión para poder concretar
+    su pedido.
+
+--------------------------------------------------------------------------------
+2. CLIENTE REGISTRADO
+--------------------------------------------------------------------------------
+* Descripción:
+  Usuario autenticado que tiene una cuenta activa y verificada en la plataforma.
+
+* Función Principal:
+  Autogestionar sus órdenes, realizar pagos y realizar el seguimiento de su comida.
+
+* ¿Qué cosas puede hacer? (Capacidades y Permisos):
+  - Realizar y confirmar pedidos bajo tres modalidades:
+    a) Consumo en el local (escaneando QR en mesa).
+    b) Retiro en tienda (Pick-up).
+    c) Entrega a domicilio (Delivery).
+  - Guardar y administrar direcciones de entrega preferidas.
+  - Guardar y gestionar métodos de pago de forma segura.
+  - Consultar el historial completo de sus pedidos anteriores.
+  - Calificar el servicio y los productos mediante una escala de 1 a 5 estrellas
+    y dejar comentarios por escrito (dentro de las 48 horas posteriores a la entrega).
+  - Acumular y canjear puntos de fidelidad para obtener descuentos o productos gratis.
+
+--------------------------------------------------------------------------------
+3. COCINERO / PERSONAL DE COCINA
+--------------------------------------------------------------------------------
+* Descripción:
+  Usuario operativo interno responsable de la preparación de los platos en el local.
+
+* Función Principal:
+  Gestionar la producción de los pedidos culinarios con agilidad y precisión.
+
+* ¿Qué cosas puede hacer? (Capacidades y Permisos):
+  - Visualizar y dar seguimiento a los pedidos entrantes (pagados) a través
+    de la pantalla digital de cocina (KDS - Kitchen Display System).
+  - Cambiar y actualizar el estado de los platos y del pedido en tiempo real
+    (ej. de "Pagado" a "En preparación", y de "En preparación" a "Listo para entrega").
+  - Reportar e informar de manera inmediata la falta temporal de stock de un
+    ingrediente o producto para que se deshabilite automáticamente del menú digital.
+
+--------------------------------------------------------------------------------
+4. REPARTIDOR
+--------------------------------------------------------------------------------
+* Descripción:
+  Usuario encargado de la logística de distribución y entrega física de los
+  pedidos a los clientes en la modalidad de Delivery.
+
+* Función Principal:
+  Asegurar que los pedidos listos lleguen al cliente final a tiempo y en óptimas condiciones.
+
+* ¿Qué cosas puede hacer? (Capacidades y Permisos):
+  - Recibir y aceptar o rechazar solicitudes de reparto asignadas de forma automática
+    o manual.
+  - Consultar la información del cliente, dirección exacta y visualizar la ruta
+    de entrega óptima mediante soporte de GPS integrado en la app móvil.
+  - Actualizar el estado del reparto en tiempo real (ej. "En camino", "Entregado"
+    o reportar alguna "Incidencia").
+  - Gestionar su estado de disponibilidad (libre o en ruta/ocupado).
+  *Nota operacional: Para garantizar la calidad del servicio, no puede llevar
+   más de 2 pedidos activos en ruta de manera simultánea.*
+
+--------------------------------------------------------------------------------
+5. ADMINISTRADOR
+--------------------------------------------------------------------------------
+* Descripción:
+  Propietario, gerente o personal administrativo de confianza con acceso total.
+
+* Función Principal:
+  Supervisar la operación del restaurante, configurar las reglas del negocio
+  y analizar el rendimiento financiero y operativo.
+
+* ¿Qué cosas puede hacer? (Capacidades y Permisos):
+  - Gestión integral del Menú: crear, editar, deshabilitar y eliminar categorías,
+    platos, precios, descripciones e imágenes de los productos.
+  - Control de usuarios y personal: gestionar cuentas, roles de acceso, y
+    administrar la lista de repartidores autorizados.
+  - Configurar las reglas de negocio globales y niveles de precios de suscripción.
+  - Acceder al panel de control analítico: visualización de estadísticas de ventas,
+    reportes financieros, análisis de demanda y métricas de desempeño de reparto.
+  - Administrar promociones, cupones y la configuración del programa de fidelidad.
+================================================================================
