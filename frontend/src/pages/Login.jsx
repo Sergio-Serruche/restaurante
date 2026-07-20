@@ -29,7 +29,7 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(data.usuario));
       
       // Si el rol es cocina o admin, ir al panel de gestión
-      if (data.usuario.rol === 'administrador' || data.usuario.rol === 'cocinero') {
+      if (data.usuario.rol === 'administrador' || data.usuario.rol === 'cocinero' || data.usuario.rol === 'repartidor') {
         navigate('/admin');
       } else {
         navigate('/menu');

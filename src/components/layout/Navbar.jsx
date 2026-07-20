@@ -63,8 +63,8 @@ const Navbar = () => {
               <div className="bg-primary p-2.5 rounded-2xl text-white shadow-premium group-hover:scale-105 transition-transform">
                 <UtensilsCrossed className="h-6 w-6" />
               </div>
-              <span className="font-display font-extrabold text-2xl tracking-tight text-dark">
-                Delicias<span className="text-primary">.</span>
+              <span className="font-elegant font-bold text-2xl tracking-tight text-dark">
+                Adriano's<span className="text-primary">.</span>
               </span>
             </Link>
           </div>
@@ -123,7 +123,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Dashboard Shortcut */}
-                {user.rol === 'administrador' && (
+                {(user.rol === 'administrador' || user.rol === 'cocinero' || user.rol === 'repartidor') && (
                   <Link 
                     to="/admin" 
                     className="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl transition-all duration-200"
@@ -234,7 +234,7 @@ const Navbar = () => {
                 <UserIcon className="h-5 w-5 text-gray-400" /> Mi Perfil
               </Link>
 
-              {user.rol === 'administrador' && (
+              {(user.rol === 'administrador' || user.rol === 'cocinero' || user.rol === 'repartidor') && (
                 <Link
                   to="/admin"
                   onClick={() => setIsOpen(false)}

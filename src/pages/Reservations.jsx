@@ -36,7 +36,7 @@ const Reservations = () => {
             <CalendarDays className="h-8 w-8" />
           </div>
           <h1 className="font-display font-extrabold text-4xl text-dark">Reserva tu Mesa</h1>
-          <p className="text-gray-500 mt-2">Asegura tu lugar en Delicias para una experiencia inolvidable</p>
+          <p className="text-gray-500 mt-2">Asegura tu lugar en Adriano's para una experiencia inolvidable</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3 bg-white rounded-3xl border border-gray-100 shadow-premium p-8">
@@ -59,7 +59,7 @@ const Reservations = () => {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Numero de Personas</label>
+                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Número de Personas</label>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => setPersonas(Math.max(1, personas - 1))} className="p-2 bg-light rounded-xl hover:bg-gray-200 transition-colors text-dark font-bold">-</button>
                   <span className="w-12 text-center font-bold text-lg">{personas}</span>

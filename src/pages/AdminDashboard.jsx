@@ -99,12 +99,12 @@ export default function AdminDashboard() {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-3xl border border-gray-100 shadow-premium p-6">
-                <h3 className="font-display font-bold text-lg mb-4">Ventas por Dia</h3>
+                <h3 className="font-display font-bold text-lg mb-4">Ventas por Día</h3>
                 <Bar data={barData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
               </div>
               <div className="bg-white rounded-3xl border border-gray-100 shadow-premium p-6">
-                <h3 className="font-display font-bold text-lg mb-4">Productos Mas Vendidos</h3>
-                {popProd.length > 0 ? <Pie data={pieData} options={{ responsive: true, plugins: { legend: { position: "bottom" } } }} /> : <p className="text-gray-500 text-sm">Sin datos aun</p>}
+                <h3 className="font-display font-bold text-lg mb-4">Productos Más Vendidos</h3>
+                {popProd.length > 0 ? <Pie data={pieData} options={{ responsive: true, plugins: { legend: { position: "bottom" } } }} /> : <p className="text-gray-500 text-sm">Sin datos aún</p>}
               </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -171,13 +171,13 @@ export default function AdminDashboard() {
                   <form onSubmit={e => { e.preventDefault(); const d = { ...pf, precio: parseFloat(pf.precio), calificacion: parseFloat(pf.calificacion) || 5 }; if (ept) { editProduct(ept.id, d); } else { addProduct(d); } setSpf(false); alert(ept ? "Producto actualizado" : "Producto agregado"); }} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div><label className={lbl}>Nombre</label><input type="text" required value={pf.nombre} onChange={e => setPf({ ...pf, nombre: e.target.value })} className={ipt} /></div>
-                      <div><label className={lbl}>Categoria</label><select value={pf.categoria} onChange={e => setPf({ ...pf, categoria: e.target.value })} className={ipt}>{categories.map(c => <option key={c}>{c}</option>)}</select></div>
+                      <div><label className={lbl}>Categoría</label><select value={pf.categoria} onChange={e => setPf({ ...pf, categoria: e.target.value })} className={ipt}>{categories.map(c => <option key={c}>{c}</option>)}</select></div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div><label className={lbl}>Precio (S/)</label><input type="number" step="0.01" required value={pf.precio} onChange={e => setPf({ ...pf, precio: e.target.value })} className={ipt} /></div>
-                      <div><label className={lbl}>Calificacion</label><input type="number" step="0.1" min="0" max="5" value={pf.calificacion} onChange={e => setPf({ ...pf, calificacion: e.target.value })} className={ipt} /></div>
+                      <div><label className={lbl}>Calificación</label><input type="number" step="0.1" min="0" max="5" value={pf.calificacion} onChange={e => setPf({ ...pf, calificacion: e.target.value })} className={ipt} /></div>
                     </div>
-                    <div><label className={lbl}>Descripcion</label><textarea rows="2" required value={pf.descripcion} onChange={e => setPf({ ...pf, descripcion: e.target.value })} className={ipt} /></div>
+                    <div><label className={lbl}>Descripción</label><textarea rows="2" required value={pf.descripcion} onChange={e => setPf({ ...pf, descripcion: e.target.value })} className={ipt} /></div>
                     <div><label className={lbl}>URL de imagen</label><input type="text" value={pf.imagen} onChange={e => setPf({ ...pf, imagen: e.target.value })} placeholder="https://..." className={ipt} /></div>
                     <div className="flex gap-3">
                       <button type="submit" className={bp}>Guardar</button>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-light">
-                    <tr><th className="text-left p-4 font-bold text-gray-500">Producto</th><th className="text-left p-4 font-bold text-gray-500">Categoria</th><th className="text-right p-4 font-bold text-gray-500">Precio</th><th className="text-center p-4 font-bold text-gray-500">Calif</th><th className="text-right p-4 font-bold text-gray-500">Acciones</th></tr>
+                    <tr><th className="text-left p-4 font-bold text-gray-500">Producto</th><th className="text-left p-4 font-bold text-gray-500">Categoría</th><th className="text-right p-4 font-bold text-gray-500">Precio</th><th className="text-center p-4 font-bold text-gray-500">Calif</th><th className="text-right p-4 font-bold text-gray-500">Acciones</th></tr>
                   </thead>
                   <tbody>
                     {filteredProducts.map(p => (
@@ -208,7 +208,7 @@ export default function AdminDashboard() {
                           <div className="flex gap-2 justify-end">
                             <button onClick={() => { setEpt(p); setPf({ nombre: p.nombre, descripcion: p.descripcion, precio: p.precio.toString(), categoria: p.categoria, imagen: p.imagen || "", calificacion: p.calificacion }); setSpf(true); }}
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"><Edit className="h-4 w-4" /></button>
-                            <button onClick={() => { if (confirm("Eliminar " + p.nombre + "?")) deleteProduct(p.id); }}
+                            <button onClick={() => { if (confirm("¿Eliminar " + p.nombre + "?")) deleteProduct(p.id); }}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors"><Trash2 className="h-4 w-4" /></button>
                           </div>
                         </td>
@@ -240,7 +240,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="p-4 text-gray-500">{u.email}</td>
                         <td className="p-4">
-                          <span className={"text-xs font-bold px-2.5 py-1 rounded-full " + (u.rol === "administrador" ? "bg-red-100 text-red-700" : u.rol === "cocinero" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700")}>{u.rol}</span>
+                          <span className={"text-xs font-bold px-2.5 py-1 rounded-full " + (u.rol === "administrador" ? "bg-red-100 text-red-700" : u.rol === "cocinero" ? "bg-blue-100 text-blue-700" : u.rol === "repartidor" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700")}>{u.rol}</span>
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex gap-2 justify-end">
@@ -248,9 +248,10 @@ export default function AdminDashboard() {
                               className="p-2 bg-light rounded-lg text-xs font-bold outline-none focus:ring-2 focus:ring-primary">
                               <option value="cliente">Cliente</option>
                               <option value="cocinero">Cocinero</option>
+                              <option value="repartidor">Repartidor</option>
                               <option value="administrador">Admin</option>
                             </select>
-                            <button onClick={() => { if (confirm("Eliminar " + u.nombre + "?")) deleteUser(u.id); }}
+                            <button onClick={() => { if (confirm("¿Eliminar " + u.nombre + "?")) deleteUser(u.id); }}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-xl"><Trash2 className="h-4 w-4" /></button>
                           </div>
                         </td>
@@ -276,7 +277,7 @@ export default function AdminDashboard() {
                   <div className="flex gap-2">
                     {r.estado !== "confirmada" && <button onClick={() => updateReservationStatus(r.id, "confirmada")} className="px-4 py-2 text-xs font-bold bg-green-50 text-green-600 rounded-xl hover:bg-green-100">Confirmar</button>}
                     {r.estado !== "cancelada" && <button onClick={() => updateReservationStatus(r.id, "cancelada")} className="px-4 py-2 text-xs font-bold bg-red-50 text-red-600 rounded-xl hover:bg-red-100">Cancelar</button>}
-                    <button onClick={() => { if (confirm("Eliminar reserva?")) deleteReservation(r.id); }} className="px-4 py-2 text-xs font-bold bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200">Eliminar</button>
+                    <button onClick={() => { if (confirm("¿Eliminar reserva?")) deleteReservation(r.id); }} className="px-4 py-2 text-xs font-bold bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200">Eliminar</button>
                   </div>
                 </div>
               ))}

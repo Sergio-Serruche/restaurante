@@ -17,7 +17,7 @@ exports.registrar = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     // Asignar rol (por defecto 'cliente', a menos que se cree un administrador explícito)
-    const nuevoRol = rol && ['cliente', 'cocinero', 'administrador'].includes(rol) ? rol : 'cliente';
+    const nuevoRol = rol && ['cliente', 'cocinero', 'repartidor', 'administrador'].includes(rol) ? rol : 'cliente';
 
     // Insertar en la BD
     const resultado = await db.query(

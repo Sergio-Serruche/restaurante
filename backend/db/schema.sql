@@ -40,7 +40,7 @@ CREATE TABLE usuarios (
     nombre VARCHAR(150) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    rol VARCHAR(50) DEFAULT 'cliente' CHECK (rol IN ('cliente', 'cocinero', 'administrador')),
+    rol VARCHAR(50) DEFAULT 'cliente' CHECK (rol IN ('cliente', 'cocinero', 'repartidor', 'administrador')),
     puntos_fidelidad INT DEFAULT 0 CHECK (puntos_fidelidad >= 0),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

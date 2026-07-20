@@ -162,7 +162,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-dark mb-4">
-              ¿Por qué elegir Delicias?
+              ¿Por qué elegir Adriano's?
             </h2>
             <p className="text-gray-600 text-base sm:text-lg">
               Fusionamos la alta cocina con la mejor tecnología de pedidos para brindarte un servicio inigualable.

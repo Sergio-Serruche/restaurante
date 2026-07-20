@@ -13,6 +13,11 @@ const getRoleBadgeStyle = (rol) => {
         backgroundColor: '#E0F2FE',
         color: '#0369A1',
       };
+    case 'repartidor':
+      return {
+        backgroundColor: '#DCFCE7',
+        color: '#15803D',
+      };
     case 'cliente':
     default:
       return {
@@ -26,6 +31,7 @@ const getRoleLabel = (rol) => {
   switch (rol) {
     case 'administrador': return 'Administrador';
     case 'cocinero': return 'Cocinero';
+    case 'repartidor': return 'Repartidor';
     case 'cliente': return 'Cliente';
     default: return rol || '';
   }
@@ -58,7 +64,7 @@ const Navbar = ({ cartCount }) => {
           {token && (
             <>
               <Link to="/mis-pedidos" style={styles.link}>Mis Pedidos</Link>
-              {(user.rol === 'administrador' || user.rol === 'cocinero') && (
+              {(user.rol === 'administrador' || user.rol === 'cocinero' || user.rol === 'repartidor') && (
                 <Link to="/admin" style={styles.adminLink}>Panel Gestión</Link>
               )}
             </>

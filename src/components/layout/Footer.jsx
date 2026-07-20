@@ -22,8 +22,8 @@ const Footer = () => {
               <div className="bg-primary p-2.5 rounded-2xl text-white">
                 <UtensilsCrossed className="h-6 w-6" />
               </div>
-              <span className="font-display font-extrabold text-2xl tracking-tight text-white">
-                Delicias<span className="text-primary">.</span>
+              <span className="font-elegant font-bold text-2xl tracking-tight text-white">
+                Adriano's<span className="text-primary">.</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
@@ -108,7 +108,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-gold flex-shrink-0" />
-                <span>contacto@delicias.com</span>
+                <span>contacto@adrianos.com</span>
               </li>
             </ul>
           </div>
@@ -116,7 +116,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Restaurante Delicias. Todos los derechos reservados. Diseñado para una experiencia premium.</p>
+          <p>© {new Date().getFullYear()} Adriano's. Todos los derechos reservados. Diseñado para una experiencia premium.</p>
         </div>
       </div>
     </footer>

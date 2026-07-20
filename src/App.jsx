@@ -36,7 +36,7 @@ export default function App() {
                   <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/registro" element={<Register />} />
-                  <Route path="/admin" element={<ProtectedRoute allowedRoles={['administrador']}><AdminDashboard /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute allowedRoles={['administrador', 'cocinero', 'repartidor']}><AdminDashboard /></ProtectedRoute>} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </main>

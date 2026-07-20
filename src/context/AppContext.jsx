@@ -62,7 +62,7 @@ export const AppProvider = ({ children }) => {
           telefono: '987654321',
           metodoPago: 'Yape',
           items: [
-            { id: '1', nombre: 'Lomo Saltado Delicias', precio: 45.00, cantidad: 2 },
+            { id: '1', nombre: "Lomo Saltado Adriano's", precio: 45.00, cantidad: 2 },
             { id: '8', nombre: 'Chicha Morada de la Casa (1L)', precio: 15.00, cantidad: 1 }
           ],
           subtotal: 105.00,
@@ -80,7 +80,7 @@ export const AppProvider = ({ children }) => {
           telefono: '999111222',
           metodoPago: 'Tarjeta',
           items: [
-            { id: '3', nombre: 'Hamburguesa Premium Delicias', precio: 29.90, cantidad: 1 },
+            { id: '3', nombre: "Hamburguesa Premium Adriano's", precio: 29.90, cantidad: 1 },
             { id: '13', nombre: 'Torta de Chocolate Húmeda', precio: 14.50, cantidad: 1 },
             { id: '10', nombre: 'Maracuyá Frozen', precio: 13.00, cantidad: 2 }
           ],

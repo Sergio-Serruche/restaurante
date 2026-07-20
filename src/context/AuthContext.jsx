@@ -18,8 +18,8 @@ export const AuthProvider = ({ children }) => {
       const defaultUsers = [
         {
           id: 'admin-1',
-          nombre: 'Administrador Delicias',
-          email: 'admin@delicias.com',
+          nombre: "Admin Adriano's",
+          email: 'admin@adrianos.com',
           telefono: '999888777',
           foto: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&auto=format&fit=crop&q=80',
           rol: 'administrador',
@@ -28,11 +28,29 @@ export const AuthProvider = ({ children }) => {
         {
           id: 'client-1',
           nombre: 'Cliente de Prueba',
-          email: 'cliente@delicias.com',
+          email: 'cliente@adrianos.com',
           telefono: '987654321',
           foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
           rol: 'cliente',
           passwordHash: hashPassword('Cliente123*')
+        },
+        {
+          id: 'cocinero-1',
+          nombre: 'Cocinero Restaurate',
+          email: 'cocinero@adrianos.com',
+          telefono: '999888776',
+          foto: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=150&auto=format&fit=crop&q=80',
+          rol: 'cocinero',
+          passwordHash: hashPassword('Cocinero123*')
+        },
+        {
+          id: 'repartidor-1',
+          nombre: 'Repartidor Restaurate',
+          email: 'repartidor@adrianos.com',
+          telefono: '999888775',
+          foto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
+          rol: 'repartidor',
+          passwordHash: hashPassword('Repartidor123*')
         }
       ];
       localStorage.setItem('users', JSON.stringify(defaultUsers));

@@ -27,7 +27,7 @@ const History = () => {
             {myOrders.length === 0 ? (
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-10 text-center">
                 <ShoppingBag className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">Aun no tienes pedidos</p>
+                <p className="text-gray-500">Aún no tienes pedidos</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -62,7 +62,7 @@ const History = () => {
             {myReservations.length === 0 ? (
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-10 text-center">
                 <CalendarDays className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">Aun no tienes reservas</p>
+                <p className="text-gray-500">Aún no tienes reservas</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

@@ -96,6 +96,7 @@ const Register = () => {
             >
               <option value="cliente">Cliente (Consumidor)</option>
               <option value="cocinero">Personal de Cocina</option>
+              <option value="repartidor">Repartidor (Delivery)</option>
               <option value="administrador">Administrador del Local</option>
             </select>
           </div>

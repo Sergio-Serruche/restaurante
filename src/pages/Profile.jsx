@@ -61,12 +61,12 @@ const Profile = () => {
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
               </div>
               <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Telefono</label>
+                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Teléfono</label>
                 <input type="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
               </div>
               <div>
-                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Nueva Contrasena (opcional)</label>
-                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Dejar vac�o para mantener" className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
+                <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Nueva Contraseña (opcional)</label>
+                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Dejar vacío para mantener" className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
               </div>
             </div>
             <button type="submit" className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl shadow-premium transition-all duration-200">

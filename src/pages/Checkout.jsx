@@ -25,9 +25,9 @@ const Checkout = () => {
     return (
       <div className="pt-24 pb-20 min-h-screen bg-light flex items-center justify-center">
         <div className="text-center">
-          <h2 className="font-display font-extrabold text-2xl text-dark mb-3">Carrito vacio</h2>
+          <h2 className="font-display font-extrabold text-2xl text-dark mb-3">Carrito vacío</h2>
           <p className="text-gray-500 mb-6">Agrega productos al carrito primero</p>
-          <button onClick={() => navigate('/menu')} className="px-6 py-3 bg-primary text-white font-bold rounded-xl">Ir al Menu</button>
+          <button onClick={() => navigate('/menu')} className="px-6 py-3 bg-primary text-white font-bold rounded-xl">Ir al Menú</button>
         </div>
       </div>
     );
@@ -72,7 +72,7 @@ const Checkout = () => {
           </div>
           <div ref={receiptRef} className="bg-white rounded-3xl border border-gray-100 shadow-premium p-8 mb-6" style={{ fontFamily: 'monospace' }}>
             <div className="text-center border-b border-dashed border-gray-300 pb-4 mb-4">
-              <h2 className="font-bold text-xl">Restaurante Delicias</h2>
+              <h2 className="font-bold text-xl">Adriano's</h2>
               <p className="text-xs text-gray-500">Av. Larco 456, Miraflores, Lima</p>
               <p className="text-xs text-gray-500">RUC: 20567890321</p>
             </div>
@@ -80,8 +80,8 @@ const Checkout = () => {
               <span><strong>Cliente:</strong> {orderInfo.cliente}</span>
               <span><strong>Fecha:</strong> {new Date(orderInfo.fecha).toLocaleDateString('es-PE')}</span>
             </div>
-            <div className="text-sm mb-2"><strong>Direccion:</strong> {orderInfo.direccion}, {orderInfo.distrito}</div>
-            <div className="text-sm mb-4"><strong>Metodo de pago:</strong> {orderInfo.metodoPago}</div>
+            <div className="text-sm mb-2"><strong>Dirección:</strong> {orderInfo.direccion}, {orderInfo.distrito}</div>
+            <div className="text-sm mb-4"><strong>Método de pago:</strong> {orderInfo.metodoPago}</div>
             <table className="w-full text-sm mb-4">
               <thead><tr className="border-b border-gray-300"><th className="text-left py-1">Producto</th><th className="text-center py-1">Cant</th><th className="text-right py-1">Precio</th><th className="text-right py-1">Subtotal</th></tr></thead>
               <tbody>
@@ -120,10 +120,10 @@ const Checkout = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3 space-y-6">
             <div className="bg-white rounded-3xl border border-gray-100 shadow-premium p-6 space-y-5">
-              <h3 className="font-display font-bold text-lg">Direccion de Entrega</h3>
+              <h3 className="font-display font-bold text-lg">Dirección de Entrega</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Direccion</label>
+                  <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Dirección</label>
                   <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} required placeholder="Av. Larco 456" className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
                 </div>
                 <div>
@@ -131,13 +131,13 @@ const Checkout = () => {
                   <input type="text" value={distrito} onChange={(e) => setDistrito(e.target.value)} required placeholder="Miraflores" className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Telefono</label>
+                  <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Teléfono</label>
                   <input type="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} required className="w-full px-4 py-3 bg-light rounded-xl border-0 text-sm focus:ring-2 focus:ring-primary outline-none" />
                 </div>
               </div>
             </div>
             <div className="bg-white rounded-3xl border border-gray-100 shadow-premium p-6 space-y-5">
-              <h3 className="font-display font-bold text-lg">Metodo de Pago</h3>
+              <h3 className="font-display font-bold text-lg">Método de Pago</h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { id: 'Yape', icon: QrCode, label: 'Yape' },
@@ -156,8 +156,8 @@ const Checkout = () => {
                   <div className="bg-white p-4 rounded-2xl inline-block mb-3">
                     <QrCode className="h-32 w-32 text-dark" />
                   </div>
-                  <p className="text-sm font-bold text-dark mb-2">Escanea el codigo QR con Yape</p>
-                  <p className="text-xs text-gray-500 mb-3">O paga al numero: 987 654 321</p>
+                  <p className="text-sm font-bold text-dark mb-2">Escanea el código QR con Yape</p>
+                  <p className="text-xs text-gray-500 mb-3">O paga al número: 987 654 321</p>
                   <p className="font-bold text-lg text-dark mb-3">Total: S/ {total.toFixed(2)}</p>
                   <button onClick={() => setYapeConfirmed(!yapeConfirmed)}
                     className={'px-6 py-2.5 rounded-xl font-bold text-sm transition-all ' + (yapeConfirmed ? 'bg-green-600 text-white' : 'bg-white text-green-600 border-2 border-green-600')}>

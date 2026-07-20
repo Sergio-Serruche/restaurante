@@ -2,7 +2,7 @@ export const initialProducts = [
   // Platos
   {
     id: "1",
-    nombre: "Lomo Saltado Delicias",
+    nombre: "Lomo Saltado Adriano's",
     descripcion: "Trozos de lomo fino salteados al wok con cebolla, tomate, ají amarillo y un toque de pisco. Acompañado de papas fritas crujientes y arroz con choclo.",
     precio: 45.00,
     categoria: "🍛 Platos",
@@ -24,7 +24,7 @@ export const initialProducts = [
   },
   {
     id: "3",
-    nombre: "Hamburguesa Premium Delicias",
+    nombre: "Hamburguesa Premium Adriano's",
     descripcion: "200g de carne angus seleccionada, queso cheddar derretido, tocino ahumado crujiente, aros de cebolla caramelizados, salsa secreta en pan brioche. Con papas rústicas.",
     precio: 29.90,
     categoria: "🍛 Platos",
@@ -74,12 +74,12 @@ export const initialProducts = [
     descripcion: "Masa de papa amarilla sazonada con ají amarillo, limón y aceite, rellena de pechuga de pollo deshilachada en mayonesa y palta fresca.",
     precio: 19.50,
     categoria: "🥗 Entradas",
-    imagen: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
     calificacion: 4.8,
     ventas: 180,
     popularidad: 89
   },
-
+ 
   // Bebidas Frías
   {
     id: "8",
@@ -109,7 +109,7 @@ export const initialProducts = [
     descripcion: "Bebida granizada de pura pulpa de maracuyá ácido con almíbar dulce, licuado a punto de nieve.",
     precio: 13.00,
     categoria: "🍹 Bebidas Frías",
-    imagen: "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?w=600&auto=format&fit=crop&q=80",
     calificacion: 4.6,
     ventas: 180,
     popularidad: 80
@@ -122,18 +122,18 @@ export const initialProducts = [
     descripcion: "Café de especialidad proveniente de Quillabamba, Cusco, extraído con leche vaporizada cremosa y espolvoreado con cacao al 70%.",
     precio: 9.50,
     categoria: "☕ Bebidas Calientes",
-    imagen: "https://images.unsplash.com/photo-1570968915860-54d5c301fc9f?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&auto=format&fit=crop&q=80",
     calificacion: 4.7,
     ventas: 210,
     popularidad: 85
   },
   {
     id: "12",
-    nombre: "Chocolate Caliente Delicias",
+    nombre: "Chocolate Caliente Adriano's",
     descripcion: "Elaborado con cacao nativo de Chulucanas al 65%, leche evaporada, canela, clavo de olor y un toque de cáscara de naranja.",
     precio: 11.00,
     categoria: "☕ Bebidas Calientes",
-    imagen: "https://images.unsplash.com/photo-151097252790b-a4e402924197?w=600&auto=format&fit=crop&q=80",
+    imagen: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=600&auto=format&fit=crop&q=80",
     calificacion: 4.8,
     ventas: 175,
     popularidad: 78
