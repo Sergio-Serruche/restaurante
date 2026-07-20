@@ -1,145 +1,68 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { UtensilsCrossed } from 'lucide-react';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirect = new URLSearchParams(location.search).get('redirect') || '';
+  const [cuemail, setCuemail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
-
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.mensaje || 'Error al iniciar sesiÃ³n.');
-      }
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.usuario));
-      
-      // Si el rol es cocina o admin, ir al panel de gestiÃ³n
-      if (data.usuario.rol === 'administrador' || data.usuario.rol === 'cocinero') {
+    setError('');
+    const result = login(cuemail, password);
+    if (result.success) {
+      if (result.user.rol === 'administrador' || result.user.rol === 'cocinero') {
         navigate('/admin');
+      } else if (redirect === 'checkout') {
+        navigate('/checkout');
       } else {
-        navigate('/menu');
+        navigate('/');
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    } else {
+      setError(result.message);
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.pageContainer} className="animate-fade-in">
-      <div style={styles.formCard} className="glass">
-        <h2 style={styles.title}>Â¡Hola de nuevo!</h2>
-        <p style={styles.subtitle}>Inicia sesiÃ³n para pedir tus platos favoritos en Restaurate</p>
-        
-        {error && <div style={styles.errorAlert}>{error}</div>}
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Correo ElectrÃ³nico</label>
-            <input
-              type="email"
-              className="form-control"
-              required
-              placeholder="ejemplo@correo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+    <div className="pt-24 pb-20 min-h-screen bg-light flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="bg-primary p-3 rounded-2xl text-white inline-flex mb-4">
+            <UtensilsCrossed className="h-8 w-8" />
           </div>
-
-          <div className="form-group">
-            <label className="form-label">ContraseÃ±a</label>
-            <input
-              type="password"
-              className="form-control"
-              required
-              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}
-            disabled={loading}
-          >
-            {loading ? 'Iniciando SesiÃ³n...' : 'Entrar'}
-          </button>
-        </form>
-
-        <p style={styles.footerText}>
-          Â¿No tienes una cuenta? <Link to="/registro" style={styles.link}>RegÃ­strate aquÃ­</Link>
-        </p>
+          <h1 className="font-display font-extrabold text-3xl text-dark">Iniciar Sesión</h1>
+          <p className="text-gray-500 mt-2">Accede a tu cuenta Delicias</p>
+        </div>
+        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-premium">
+          {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-4 text-sm font-semibold">{error}</div>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Correo</label>
+              <input type="email" required placeholder="correo@ejemplo.com" value={cuemail} onChange={(e) => setCuemail(e.target.value)} className="w-full px-4 py-3 bg-light rounded-xl border-0 text-dark text-sm focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider block mb-1 text-gray-600">Contraseña</label>
+              <input type="password" required placeholder="••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 bg-light rounded-xl border-0 text-dark text-sm focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+            <button type="submit" disabled={loading} className="w-full py-3 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl shadow-premium transition-all duration-200">
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+          <p className="text-center mt-6 text-sm text-gray-500">
+            ¿No tienes cuenta? <Link to="/registro" className="text-primary font-bold hover:underline">Regístrate</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
 };
-
-const styles = {
-  pageContainer: {
-    minHeight: 'calc(100vh - 70px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-  },
-  formCard: {
-    width: '100%',
-    maxWidth: '400px',
-    padding: '40px 30px',
-    borderRadius: '18px',
-    boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02)',
-  },
-  title: {
-    fontSize: '2rem',
-    textAlign: 'center',
-    marginBottom: '8px',
-    color: '#FF6B35',
-  },
-  subtitle: {
-    fontSize: '0.9rem',
-    color: '#78716C',
-    textAlign: 'center',
-    marginBottom: '24px',
-  },
-  errorAlert: {
-    backgroundColor: '#FEE2E2',
-    color: '#EF4444',
-    padding: '12px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-    fontSize: '0.85rem',
-    fontWeight: 600,
-    border: '1px solid #FCA5A5',
-  },
-  footerText: {
-    textAlign: 'center',
-    marginTop: '24px',
-    fontSize: '0.9rem',
-    color: '#78716C',
-  },
-  link: {
-    color: '#FF6B35',
-    fontWeight: 'bold',
-    textDecoration: 'none',
-  }
-};
-
 export default Login;

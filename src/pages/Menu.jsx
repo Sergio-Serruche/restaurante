@@ -1,221 +1,218 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useApp } from '../context/AppContext';
+import { useCart } from '../context/CartContext';
+import { Search, Star, ShoppingCart, ArrowUpDown, Flame, Utensils } from 'lucide-react';
 
-const Menu = ({ onAddToCart }) => {
-  const [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+const Menu = () => {
+  const { products } = useApp();
+  const { addToCart } = useCart();
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [sortBy, setSortBy] = useState('default'); // default, priceAsc, priceDesc, popularity
 
-  useEffect(() => {
-    const fetchDatos = async () => {
-      try {
-        const [prodRes, catRes] = await Promise.all([
-          fetch('http://localhost:5000/api/productos'),
-          fetch('http://localhost:5000/api/productos/categorias')
-        ]);
-
-        if (!prodRes.ok || !catRes.ok) {
-          throw new Error('No se pudo conectar con el servidor.');
-        }
-
-        const prodData = await prodRes.json();
-        const catData = await catRes.json();
-
-        setProductos(prodData);
-        setCategorias(catData);
-      } catch (err) {
-        setError('Error al conectar con la base de datos de Restaurate. Inicia el servidor backend para ver el menú.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDatos();
+  const categories = useMemo(() => {
+    return ['Todos', '🍛 Platos', '🥗 Entradas', '🍹 Bebidas Frías', '☕ Bebidas Calientes', '🍰 Postres'];
   }, []);
 
-  const productosFiltrados = categoriaSeleccionada === 'todas'
-    ? productos
-    : productos.filter(p => p.categoria_id === parseInt(categoriaSeleccionada));
+  // Filter & Sort products
+  const filteredAndSortedProducts = useMemo(() => {
+    let result = [...products];
 
-  const getEmojiForCategory = (nombre) => {
-    switch (nombre.toLowerCase()) {
-      case 'entradas': return '🥟';
-      case 'platos fuertes': return '🍛';
-      case 'bebidas': return '🥤';
-      case 'postres': return '🍰';
-      default: return '🍴';
+    // Search filter
+    if (searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(p => 
+        p.nombre.toLowerCase().includes(term) || 
+        p.descripcion.toLowerCase().includes(term)
+      );
     }
-  };
 
-  if (loading) {
-    return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.spinner}></div>
-        <p style={{ marginTop: '15px', color: '#78716C' }}>Cargando Menú de Restaurate...</p>
-      </div>
-    );
-  }
+    // Category filter
+    if (selectedCategory !== 'Todos') {
+      result = result.filter(p => p.categoria === selectedCategory);
+    }
+
+    // Sorting
+    if (sortBy === 'priceAsc') {
+      result.sort((a, b) => a.precio - b.precio);
+    } else if (sortBy === 'priceDesc') {
+      result.sort((a, b) => b.precio - a.precio);
+    } else if (sortBy === 'popularity') {
+      result.sort((a, b) => b.popularidad - a.popularidad);
+    } else if (sortBy === 'rating') {
+      result.sort((a, b) => b.calificacion - a.calificacion);
+    }
+
+    return result;
+  }, [products, searchTerm, selectedCategory, sortBy]);
 
   return (
-    <div style={styles.container} className="animate-fade-in">
-      <div style={styles.header}>
-        <h1 style={styles.title}>Menú Digital</h1>
-        <p style={styles.subtitle}>Selecciona tus platos favoritos elaborados con insumos frescos de alta calidad</p>
-      </div>
-
-      {error ? (
-        <div style={styles.errorCard}>
-          <span style={{ fontSize: '3rem' }}>🔌</span>
-          <h3 style={{ marginTop: '10px', color: '#B91C1C' }}>Modo de Demostración Activo</h3>
-          <p style={{ color: '#78716C', maxWidth: '500px', margin: '8px auto' }}>{error}</p>
-          <p style={{ fontSize: '0.85rem', color: '#A8A29E' }}>Sugerencia: Abre tu consola PostgreSQL, crea la base de datos y corre `npm run dev` en la carpeta backend.</p>
+    <div className="pt-24 pb-20 min-h-screen bg-light font-body">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Title */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h1 className="font-display font-extrabold text-4xl text-dark mb-3">
+            Nuestra Carta Deliciosa
+          </h1>
+          <p className="text-gray-500">
+            Explora una variedad de platos elaborados con ingredientes seleccionados y el toque tradicional de nuestra cocina.
+          </p>
         </div>
-      ) : (
-        <>
-          {/* Filtros de Categorías */}
-          <div style={styles.categoriesBar}>
-            <button
-              onClick={() => setCategoriaSeleccionada('todas')}
-              style={{
-                ...styles.categoryBtn,
-                backgroundColor: categoriaSeleccionada === 'todas' ? '#FF6B35' : '#FFFFFF',
-                color: categoriaSeleccionada === 'todas' ? '#FFFFFF' : '#1C1917',
-                borderColor: categoriaSeleccionada === 'todas' ? '#FF6B35' : '#E7E5E4'
-              }}
-            >
-              🍔 Todas
-            </button>
-            {categorias.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setCategoriaSeleccionada(cat.id)}
-                style={{
-                  ...styles.categoryBtn,
-                  backgroundColor: categoriaSeleccionada === cat.id ? '#FF6B35' : '#FFFFFF',
-                  color: categoriaSeleccionada === cat.id ? '#FFFFFF' : '#1C1917',
-                  borderColor: categoriaSeleccionada === cat.id ? '#FF6B35' : '#E7E5E4'
-                }}
+
+        {/* Search, Category Filter, and Sort Controls */}
+        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-premium mb-10 flex flex-col gap-6">
+          
+          {/* Row 1: Search & Sort */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            {/* Search Input */}
+            <div className="relative md:col-span-8">
+              <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar tu plato o bebida favorita..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3.5 bg-light rounded-2xl border-0 focus:ring-2 focus:ring-primary text-sm text-dark placeholder-gray-400 transition-all duration-200 outline-none"
+              />
+            </div>
+            
+            {/* Sort Dropdown */}
+            <div className="relative md:col-span-4">
+              <div className="absolute left-4 top-3.5 h-5 w-5 text-gray-400 pointer-events-none flex items-center">
+                <ArrowUpDown className="h-5 w-5" />
+              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full pl-12 pr-10 py-3.5 bg-light rounded-2xl border-0 focus:ring-2 focus:ring-primary text-sm text-dark appearance-none outline-none cursor-pointer"
               >
-                {getEmojiForCategory(cat.nombre)} {cat.nombre}
+                <option value="default">Ordenar por (Defecto)</option>
+                <option value="priceAsc">Precio: Menor a Mayor</option>
+                <option value="priceDesc">Precio: Mayor a Menor</option>
+                <option value="popularity">Más Vendidos (Popularidad)</option>
+                <option value="rating">Mejor Calificados</option>
+              </select>
+              <div className="absolute right-4 top-4.5 pointer-events-none border-l-4 border-r-4 border-t-4 border-transparent border-t-dark"></div>
+            </div>
+          </div>
+
+          {/* Row 2: Category Badges */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                  selectedCategory === cat
+                    ? 'bg-primary text-white shadow-premium'
+                    : 'bg-light text-gray-600 hover:bg-gray-200/70 hover:text-dark'
+                }`}
+              >
+                {cat}
               </button>
             ))}
           </div>
 
-          {/* Menú de Platos */}
-          <div className="menu-grid">
-            {productosFiltrados.map(prod => (
-              <div key={prod.id} className="card-producto">
-                <div className="card-img-container">
-                  <div className="card-img-placeholder">
-                    {getEmojiForCategory(prod.categoria_nombre || '')}
+        </div>
+
+        {/* Products Grid */}
+        {filteredAndSortedProducts.length > 0 ? (
+          <motion.div 
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredAndSortedProducts.map((product) => (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  key={product.id}
+                  className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-premium group flex flex-col transition-all duration-300"
+                >
+                  {/* Image Container with zoom and tag */}
+                  <div className="relative h-48 overflow-hidden bg-gray-100">
+                    <img 
+                      src={product.imagen || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80"} 
+                      alt={product.nombre}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    
+                    {/* Category Label */}
+                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-dark shadow-sm">
+                      {product.categoria}
+                    </span>
+
+                    {/* Popularity Flame tag */}
+                    {product.popularidad > 90 && (
+                      <span className="absolute top-4 right-4 bg-primary-orange text-white px-2.5 py-1 rounded-full text-[10px] font-extrabold shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                        <Flame className="h-3 w-3 fill-white" /> Popular
+                      </span>
+                    )}
                   </div>
-                  {!prod.disponible && (
-                    <div style={styles.soldOutBadge}>Agotado</div>
-                  )}
-                </div>
-                <div className="card-content">
-                  <h3 className="card-title">{prod.nombre}</h3>
-                  <p className="card-desc">{prod.descripcion || 'Sin descripción disponible.'}</p>
-                  
-                  <div className="card-footer">
-                    <span className="card-price">${parseFloat(prod.precio).toFixed(2)}</span>
-                    <button
-                      className="btn btn-primary"
-                      style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                      disabled={!prod.disponible}
-                      onClick={() => onAddToCart(prod)}
-                    >
-                      {prod.disponible ? 'Añadir +' : 'Agotado'}
-                    </button>
+
+                  {/* Body Content */}
+                  <div className="p-5 flex-grow flex flex-col justify-between">
+                    <div>
+                      {/* Rating & Name */}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1 bg-gold/10 px-2 py-0.5 rounded-lg text-gold text-xs font-bold">
+                          <Star className="h-3.5 w-3.5 fill-gold text-gold" /> {product.calificacion.toFixed(1)}
+                        </div>
+                        <span className="text-xs text-gray-400">({product.ventas} vendidos)</span>
+                      </div>
+                      
+                      <h3 className="font-display font-bold text-lg text-dark group-hover:text-primary transition-colors mb-2 line-clamp-1">
+                        {product.nombre}
+                      </h3>
+                      
+                      <p className="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">
+                        {product.descripcion}
+                      </p>
+                    </div>
+
+                    {/* Price and Cart Button */}
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                      <div>
+                        <span className="text-xs text-gray-400 block font-medium">Precio</span>
+                        <span className="font-display font-extrabold text-xl text-dark">S/ {product.precio.toFixed(2)}</span>
+                      </div>
+
+                      <button
+                        onClick={() => addToCart(product)}
+                        className="p-3 bg-primary-orange hover:bg-primary-orange/95 text-white rounded-2xl shadow-orange-premium hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center"
+                        title="Agregar al carrito"
+                      >
+                        <ShoppingCart className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Utensils className="h-8 w-8" />
+            </div>
+            <h3 className="font-display font-bold text-xl text-dark mb-2">No se encontraron productos</h3>
+            <p className="text-gray-500 max-w-sm mx-auto">
+              Intenta cambiar los términos de búsqueda o selecciona otra categoría.
+            </p>
           </div>
-        </>
-      )}
+        )}
+
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '40px 20px',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '2.5rem',
-    color: '#1C1917',
-  },
-  subtitle: {
-    color: '#78716C',
-    marginTop: '8px',
-    fontSize: '1.1rem',
-  },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '400px',
-  },
-  spinner: {
-    width: '40px',
-    height: '40px',
-    border: '4px solid #E7E5E4',
-    borderTop: '4px solid #FF6B35',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-  },
-  categoriesBar: {
-    display: 'flex',
-    gap: '12px',
-    overflowX: 'auto',
-    paddingBottom: '16px',
-    marginBottom: '30px',
-  },
-  categoryBtn: {
-    padding: '10px 18px',
-    borderRadius: '30px',
-    border: '1px solid',
-    fontWeight: '600',
-    fontSize: '0.9rem',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    whiteSpace: 'nowrap',
-    transition: 'all 0.2s',
-  },
-  soldOutBadge: {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    color: '#FFFFFF',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
-    textTransform: 'uppercase',
-  },
-  errorCard: {
-    textAlign: 'center',
-    padding: '60px 20px',
-    backgroundColor: '#FFFFFF',
-    border: '1px solid #E7E5E4',
-    borderRadius: '18px',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
-  }
 };
 
 export default Menu;

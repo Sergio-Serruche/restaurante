@@ -1,398 +1,220 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
 
-const Cart = ({ cartItems, onRemoveFromCart, onClearCart }) => {
-  const [tipoPedido, setTipoPedido] = useState('local');
-  const [mesa, setMesa] = useState('');
-  const [direccion, setDireccion] = useState('');
-  const [metodoPago, setMetodoPago] = useState('tarjeta');
-  const [loading, setLoading] = useState(false);
-  const [successOrder, setSuccessOrder] = useState(null);
-  const [error, setError] = useState('');
+const Cart = () => {
+  const { 
+    cartItems, 
+    updateQuantity, 
+    removeFromCart, 
+    clearCart, 
+    subtotal, 
+    igv, 
+    total 
+  } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  const calcularTotal = () => {
-    return cartItems.reduce((acc, item) => acc + (parseFloat(item.precio) * item.cantidad), 0);
-  };
-
-  const handleCheckout = async (e) => {
-    e.preventDefault();
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    if (cartItems.length === 0) return;
-
-    if (tipoPedido === 'local' && !mesa) {
-      setError('Por favor, indica tu número de mesa.');
-      return;
-    }
-
-    if (tipoPedido === 'delivery' && !direccion) {
-      setError('Por favor, ingresa tu dirección de entrega.');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    // Preparar el cuerpo del pedido
-    const productosPayload = cartItems.map(item => ({
-      producto_id: item.id,
-      cantidad: item.cantidad
-    }));
-
-    try {
-      // Registrar dirección primero si es delivery (para simplificar en demostración)
-      let direccionId = null;
-      if (tipoPedido === 'delivery') {
-        const dirRes = await fetch('http://localhost:5000/api/auth/perfil'); // Solo para simular
-        // En un caso real tendríamos un endpoint para guardar direcciones. 
-        // Para simplificar, le mandaremos null al servicio de pedidos y el backend lo manejará o usará una dirección de base.
-      }
-
-      const response = await fetch('http://localhost:5000/api/pedidos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tipo_pedido: tipoPedido,
-          productos: productosPayload,
-          mesa: tipoPedido === 'local' ? mesa : null,
-          direccion_id: null, // Simplificado
-          metodo_pago: metodoPago
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.mensaje || 'Error al procesar el checkout.');
-      }
-
-      // Sumar los puntos obtenidos al usuario en localstorage
-      const puntosObtenidos = Math.floor(calcularTotal() / 10);
-      user.puntos_fidelidad = (user.puntos_fidelidad || 0) + puntosObtenidos;
-      localStorage.setItem('user', JSON.stringify(user));
-
-      setSuccessOrder(data.pedido);
-      onClearCart();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  const handleCheckoutClick = () => {
+    if (!user) {
+      // Redirect to login but store redirect parameter or tell them they need to login
+      navigate('/login?redirect=checkout');
+    } else {
+      navigate('/checkout');
     }
   };
-
-  if (successOrder) {
-    return (
-      <div style={styles.container} className="animate-fade-in">
-        <div style={styles.successCard} className="glass">
-          <span style={{ fontSize: '4rem' }}>🎉</span>
-          <h2 style={{ color: '#10B981', marginTop: '10px' }}>¡Pedido Recibido con Éxito!</h2>
-          <p style={{ margin: '15px 0', color: '#78716C' }}>
-            Tu orden **#{successOrder.id}** ha sido procesada correctamente y ya está en cocina.
-          </p>
-          <div style={styles.orderDetailsBox}>
-            <p><strong>Tipo de Servicio:</strong> {successOrder.tipo_pedido.toUpperCase()}</p>
-            {successOrder.mesa && <p><strong>Mesa:</strong> {successOrder.mesa}</p>}
-            <p><strong>Monto Total:</strong> ${parseFloat(successOrder.total).toFixed(2)}</p>
-            <p><strong>Estado:</strong> {successOrder.estado}</p>
-            <p style={{ color: '#D97706', fontWeight: 'bold' }}>⭐ ¡Ganaste {successOrder.puntos_ganados} puntos estrella!</p>
-          </div>
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '25px' }}>
-            <Link to="/mis-pedidos" className="btn btn-secondary">Ver Mis Pedidos</Link>
-            <Link to="/menu" className="btn btn-primary">Volver al Menú</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div style={styles.container} className="animate-fade-in">
-      <h1 style={styles.title}>Tu Carrito</h1>
-      
-      {cartItems.length === 0 ? (
-        <div style={styles.emptyCartCard}>
-          <span style={{ fontSize: '3.5rem' }}>🛒</span>
-          <h3 style={{ marginTop: '10px' }}>Tu carrito está vacío</h3>
-          <p style={{ color: '#78716C', margin: '8px 0 20px' }}>Agrega deliciosos platos desde nuestro menú digital.</p>
-          <Link to="/menu" className="btn btn-primary">Ver Menú</Link>
-        </div>
-      ) : (
-        <div style={styles.cartLayout}>
-          {/* Listado de Platos */}
-          <div style={styles.cartList}>
-            {cartItems.map(item => (
-              <div key={item.id} style={styles.cartItemCard}>
-                <div style={styles.itemEmoji}>🍲</div>
-                <div style={{ flexGrow: 1 }}>
-                  <h4 style={{ fontSize: '1.05rem' }}>{item.nombre}</h4>
-                  <p style={{ color: '#78716C', fontSize: '0.85rem' }}>
-                    ${parseFloat(item.precio).toFixed(2)} x {item.cantidad}
-                  </p>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <span style={styles.itemSubtotal}>
-                    ${(parseFloat(item.precio) * item.cantidad).toFixed(2)}
-                  </span>
-                  <button
-                    onClick={() => onRemoveFromCart(item.id)}
-                    style={styles.deleteBtn}
-                    title="Eliminar producto"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            ))}
+    <div className="pt-24 pb-20 min-h-screen bg-light font-body">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Title */}
+        <h1 className="font-display font-extrabold text-3xl text-dark mb-8 flex items-center gap-3">
+          <ShoppingBag className="h-8 w-8 text-primary" /> Mi Carrito de Compras
+        </h1>
+
+        {cartItems.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <div style={styles.summaryRow}>
-              <span>Subtotal del menú</span>
-              <strong>${calcularTotal().toFixed(2)}</strong>
-            </div>
-          </div>
-
-          {/* Formulario de Checkout */}
-          <div style={styles.checkoutForm} className="glass">
-            <h3 style={{ marginBottom: '20px', borderBottom: '1px solid #E7E5E4', paddingBottom: '10px' }}>
-              Finalizar Pedido
-            </h3>
-
-            {error && <div style={styles.errorAlert}>{error}</div>}
-
-            <form onSubmit={handleCheckout}>
-              <div className="form-group">
-                <label className="form-label">Modalidad de Pedido</label>
-                <select
-                  className="form-control"
-                  value={tipoPedido}
-                  onChange={(e) => setTipoPedido(e.target.value)}
-                >
-                  <option value="local">Consumo en Local (Mesa)</option>
-                  <option value="pick-up">Recojo en Tienda (Llevar)</option>
-                  <option value="delivery">Envío a Domicilio (Delivery)</option>
-                </select>
-              </div>
-
-              {tipoPedido === 'local' && (
-                <div className="form-group">
-                  <label className="form-label">Número de Mesa</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="Ej. 12"
-                    required
-                    value={mesa}
-                    onChange={(e) => setMesa(e.target.value)}
-                  />
-                </div>
-              )}
-
-              {tipoPedido === 'delivery' && (
-                <div className="form-group">
-                  <label className="form-label">Dirección de Entrega</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Av. Principal 123, Dpto 402"
-                    required
-                    value={direccion}
-                    onChange={(e) => setDireccion(e.target.value)}
-                  />
-                </div>
-              )}
-
-              <div className="form-group">
-                <label className="form-label">Método de Pago</label>
-                <div style={styles.paymentRadioGroup}>
-                  <label style={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name="metodoPago"
-                      value="tarjeta"
-                      checked={metodoPago === 'tarjeta'}
-                      onChange={() => setMetodoPago('tarjeta')}
-                    />
-                    💳 Tarjeta de Crédito (Simulada)
-                  </label>
-                  <label style={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name="metodoPago"
-                      value="efectivo"
-                      checked={metodoPago === 'efectivo'}
-                      onChange={() => setMetodoPago('efectivo')}
-                    />
-                    💵 Efectivo contra entrega
-                  </label>
-                </div>
-              </div>
-
-              <div style={styles.totalBox}>
-                <span>Total a Pagar:</span>
-                <span style={styles.totalPrice}>${calcularTotal().toFixed(2)}</span>
-              </div>
-
-              {!token ? (
-                <Link
-                  to="/login"
-                  className="btn btn-secondary"
-                  style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}
-                >
-                  Inicia Sesión para Confirmar
-                </Link>
-              ) : (
+            {/* Left Column: Items List */}
+            <div className="lg:col-span-8 space-y-4">
+              
+              {/* Header actions */}
+              <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <span className="text-sm font-semibold text-gray-500">
+                  {cartItems.length} {cartItems.length === 1 ? 'producto seleccionado' : 'productos seleccionados'}
+                </span>
                 <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}
-                  disabled={loading}
+                  onClick={clearCart}
+                  className="text-xs font-bold text-primary hover:text-primary/80 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
                 >
-                  {loading ? 'Confirmando pedido...' : 'Realizar Pedido'}
+                  <Trash2 className="h-4 w-4" /> Vaciar Carrito
                 </button>
-              )}
-            </form>
+              </div>
+
+              {/* Items */}
+              <div className="space-y-4">
+                {cartItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    {/* Item Image */}
+                    <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
+                      <img 
+                        src={item.imagen} 
+                        alt={item.nombre} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* Item Info */}
+                    <div className="flex-grow text-center sm:text-left">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                        {item.categoria}
+                      </span>
+                      <h3 className="font-display font-bold text-base sm:text-lg text-dark line-clamp-1">
+                        {item.nombre}
+                      </h3>
+                      <p className="font-display font-bold text-primary text-sm mt-1 sm:hidden">
+                        S/ {item.precio.toFixed(2)} c/u
+                      </p>
+                    </div>
+
+                    {/* Quantity Controls & Prices */}
+                    <div className="flex flex-row sm:flex-row items-center justify-between w-full sm:w-auto gap-4 sm:gap-8 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                      
+                      {/* Price per unit (desktop only) */}
+                      <div className="hidden sm:block text-right">
+                        <span className="text-xs text-gray-400 block">Unitario</span>
+                        <span className="font-semibold text-gray-700 text-sm">S/ {item.precio.toFixed(2)}</span>
+                      </div>
+
+                      {/* Counter */}
+                      <div className="flex items-center bg-light rounded-xl p-1 border border-gray-200">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.cantidad - 1)}
+                          className="p-1.5 text-gray-500 hover:text-primary hover:bg-white rounded-lg transition-all"
+                        >
+                          <Minus className="h-4.5 w-4.5" />
+                        </button>
+                        <span className="w-8 text-center font-bold text-sm text-dark">
+                          {item.cantidad}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.cantidad + 1)}
+                          className="p-1.5 text-gray-500 hover:text-primary hover:bg-white rounded-lg transition-all"
+                        >
+                          <Plus className="h-4.5 w-4.5" />
+                        </button>
+                      </div>
+
+                      {/* Subtotal Item */}
+                      <div className="text-right">
+                        <span className="text-xs text-gray-400 block">Total</span>
+                        <span className="font-display font-extrabold text-base text-dark">
+                          S/ {(item.precio * item.cantidad).toFixed(2)}
+                        </span>
+                      </div>
+
+                      {/* Delete button */}
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="p-2 text-gray-400 hover:text-primary hover:bg-red-50 rounded-xl transition-all"
+                        title="Eliminar de carrito"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+
+              {/* Keep shopping link */}
+              <div className="pt-2">
+                <Link 
+                  to="/menu" 
+                  className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Seguir comprando en la carta
+                </Link>
+              </div>
+
+            </div>
+
+            {/* Right Column: Checkout Summary Card */}
+            <div className="lg:col-span-4">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-premium p-6 space-y-6">
+                <h3 className="font-display font-bold text-lg text-dark border-b border-gray-100 pb-3">
+                  Resumen de Compra
+                </h3>
+
+                {/* Subtotals detail */}
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between text-gray-500">
+                    <span>Subtotal</span>
+                    <span className="font-medium text-dark">S/ {subtotal.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-gray-500">
+                    <span>IGV (18%)</span>
+                    <span className="font-medium text-dark">S/ {igv.toFixed(2)}</span>
+                  </div>
+
+                  <div className="border-t border-gray-100 pt-3 flex justify-between items-center">
+                    <span className="font-bold text-dark text-base">Total General</span>
+                    <span className="font-display font-extrabold text-2xl text-primary">
+                      S/ {total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* User Info Alert if not logged in */}
+                {!user && (
+                  <div className="p-3 bg-orange-50 text-primary-orange text-xs rounded-xl font-medium">
+                    ⚠️ Inicia sesión para completar tu pedido y acumular puntos estrella de fidelidad.
+                  </div>
+                )}
+
+                {/* Submit Checkout Button */}
+                <button
+                  onClick={handleCheckoutClick}
+                  className="w-full py-4 bg-primary-orange hover:bg-primary-orange/95 text-white font-bold rounded-2xl shadow-orange-premium flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  Procesar Pedido <ArrowRight className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
           </div>
-        </div>
-      )}
+        ) : (
+          /* Empty Cart State */
+          <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-2xl mx-auto">
+            <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShoppingBag className="h-10 w-10" />
+            </div>
+            <h2 className="font-display font-extrabold text-2xl text-dark mb-3">
+              Tu carrito está vacío
+            </h2>
+            <p className="text-gray-500 max-w-sm mx-auto mb-8 text-sm sm:text-base">
+              Parece que aún no has agregado delicias a tu carrito. ¡Explora nuestra carta y encuentra algo riquísimo!
+            </p>
+            <Link
+              to="/menu"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-bold rounded-xl shadow-premium hover:bg-primary/95 transition-all"
+            >
+              Ir a ver el menú
+            </Link>
+          </div>
+        )}
+
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '40px 20px',
-  },
-  title: {
-    fontSize: '2.2rem',
-    marginBottom: '30px',
-  },
-  emptyCartCard: {
-    textAlign: 'center',
-    padding: '60px 20px',
-    backgroundColor: '#FFFFFF',
-    border: '1px solid #E7E5E4',
-    borderRadius: '18px',
-    maxWidth: '500px',
-    margin: '0 auto',
-  },
-  cartLayout: {
-    display: 'grid',
-    gridTemplateColumns: '2fr 1fr',
-    gap: '30px',
-    alignItems: 'start',
-  },
-  cartList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px',
-  },
-  cartItemCard: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-    backgroundColor: '#FFFFFF',
-    padding: '16px',
-    borderRadius: '12px',
-    border: '1px solid #E7E5E4',
-  },
-  itemEmoji: {
-    fontSize: '2rem',
-    backgroundColor: '#FAF9F6',
-    padding: '8px',
-    borderRadius: '8px',
-  },
-  itemSubtotal: {
-    fontSize: '1.1rem',
-    fontWeight: 'bold',
-    color: '#FF6B35',
-  },
-  deleteBtn: {
-    background: 'none',
-    border: 'none',
-    fontSize: '1.2rem',
-    cursor: 'pointer',
-    padding: '4px',
-    borderRadius: '6px',
-    transition: 'background 0.2s',
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '16px',
-    borderTop: '2px dashed #E7E5E4',
-    fontSize: '1.1rem',
-  },
-  checkoutForm: {
-    padding: '30px 24px',
-    borderRadius: '18px',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
-  },
-  paymentRadioGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    marginTop: '6px',
-  },
-  radioLabel: {
-    fontSize: '0.9rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    cursor: 'pointer',
-  },
-  totalBox: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '15px 0',
-    borderTop: '1px solid #E7E5E4',
-    borderBottom: '1px solid #E7E5E4',
-    margin: '20px 0',
-  },
-  totalPrice: {
-    fontSize: '1.5rem',
-    fontWeight: '800',
-    color: '#FF6B35',
-  },
-  errorAlert: {
-    backgroundColor: '#FEE2E2',
-    color: '#EF4444',
-    padding: '10px',
-    borderRadius: '8px',
-    marginBottom: '15px',
-    fontSize: '0.85rem',
-    fontWeight: 600,
-  },
-  successCard: {
-    maxWidth: '600px',
-    margin: '0 auto',
-    textAlign: 'center',
-    padding: '50px 30px',
-    borderRadius: '18px',
-    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-  },
-  orderDetailsBox: {
-    backgroundColor: '#FAF9F6',
-    border: '1px solid #E7E5E4',
-    padding: '20px',
-    borderRadius: '12px',
-    textAlign: 'left',
-    maxWidth: '400px',
-    margin: '20px auto 0',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  }
 };
 
 export default Cart;
